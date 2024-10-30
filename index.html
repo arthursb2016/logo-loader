@@ -1,3 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <logo-loader
+      src="https://banner2.cleanpng.com/20190506/rpw/kisspng-microsoft-teams-office-365-microsoft-office-micros-1713893207119.webp"
+      width="200"
+      height="200"
+    ></logo-loader>
+    <script>
 const styles = `
   .logo-loader-container {
     position: relative;
@@ -16,11 +26,11 @@ const styles = `
 `
 
 class LogoLoader extends HTMLElement {
-  static observedAttributes: string[] = ['src', 'width', 'height', 'speed']
+  static observedAttributes = ['src', 'width', 'height', 'speed']
 
-  private currStep = 0
-  private timeout: NodeJS.Timeout | null = null
-  private speed = 120
+  currStep = 0
+  timeout = null
+  speed = 100
 
   constructor() {
     super()
@@ -42,7 +52,7 @@ class LogoLoader extends HTMLElement {
       img.setAttribute('class', 'logo-loader-icon')
       img.setAttribute('width', this.getWidth())
       img.setAttribute('height', this.getHeight())
-      img.setAttribute('src', this.getAttribute('src')!)
+      img.setAttribute('src', this.getAttribute('src'))
       container.appendChild(img)
     } else {
       console.error('You must set either a src attribute or slot element for the LogoLoader component.')
@@ -66,7 +76,7 @@ class LogoLoader extends HTMLElement {
     if (this.timeout) clearTimeout(this.timeout)
   }
 
-  attributeChangedCallback(name: string, oldValue: any, newValue: any) {
+  attributeChangedCallback(name, oldValue, newValue) {
     console.log(
       `Attribute ${name} has changed from ${oldValue} to ${newValue}.`,
     );
@@ -80,17 +90,22 @@ class LogoLoader extends HTMLElement {
     return this.getAttribute('height') ?? 'auto'
   }
 
-  getAnimatorBackground(index: number) {
-    return `linear-gradient(45deg, ${Array(5).fill('$color').map((_, i) => i === index ? 'white' : 'transparent').join(', ')})`
+  getAnimatorBackground(index) {
+    return `linear-gradient(0deg, ${Array(5).fill('$color').map((_, i) => i === index ? 'white' : 'transparent').join(', ')})`
   }
 
-  init(shadow: ShadowRoot) {
-    const animator = shadow.querySelector('.logo-loader-animator') as HTMLElement
+  init(shadow) {
+    const animator = shadow.querySelector('.logo-loader-animator')
     const animate = () => {
-      animator!.style.setProperty('background-image', this.getAnimatorBackground(this.currStep))
+      animator.style.setProperty('background-image', this.getAnimatorBackground(this.currStep))
       this.currStep = this.currStep === 4 ? 0 : this.currStep + 1
       this.timeout = setTimeout(animate, this.speed)
     }
     animate()
   }
 }
+
+customElements.define('logo-loader', LogoLoader)
+    </script>
+  </body>
+</html>

@@ -3,7 +3,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 
 export default {
-  input: 'src/index.ts',
+  input: 'src/logoLoader.ts',
   output: [
     {
       file: 'dist/index.esm.mjs',

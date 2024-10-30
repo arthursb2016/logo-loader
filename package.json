@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "build": "rollup -c --bundleConfigAsCjs",
+    "prepublishOnly": "npm run build"
+  },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-node-resolve": "^15.3.0",
