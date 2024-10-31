@@ -1,24 +1,21 @@
+import resolve from '@rollup/plugin-node-resolve'
 import typescript from '@rollup/plugin-typescript'
-import commonjs from '@rollup/plugin-commonjs';
-import resolve from '@rollup/plugin-node-resolve';
 
 export default {
   input: 'src/logoLoader.ts',
-  output: [
-    {
-      file: 'dist/index.esm.mjs',
-      format: 'esm',
-      sourcemap: true
-    },
-    {
-      file: 'dist/index.cjs.js',
-      format: 'cjs'
-    }
-  ],
-  external: ['responsive-app'],
+  output: {
+    dir: 'dist',
+    format: 'esm',
+    entryFileNames: 'logoLoader.esm.js',
+  },
   plugins: [
-    typescript(),
     resolve(),
-    commonjs()
-  ]
-}
+    typescript(),
+  ],
+  onwarn(warning, warn) {
+    if (warning.code === 'THIS_IS_UNDEFINED' && /webcomponents-bundle\.js/.test(warning.loc?.file || '')) {
+      return;
+    }
+    warn(warning); // Let Rollup handle other warnings as usual
+  }
+};

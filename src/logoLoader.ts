@@ -1,3 +1,7 @@
+if (!window.customElements) {
+  import('@webcomponents/webcomponentsjs/webcomponents-bundle.js');
+}
+
 const styles = `
   .logo-loader-container {
     position: relative;
@@ -12,6 +16,7 @@ const styles = `
     top: 0;
     left: 0;
     position: absolute;
+    opacity: 0.3;
   }
 `
 
@@ -20,7 +25,7 @@ class LogoLoader extends HTMLElement {
 
   private currStep = 0
   private timeout: NodeJS.Timeout | null = null
-  private speed = 120
+  private speed = 115
 
   constructor() {
     super()
@@ -81,7 +86,13 @@ class LogoLoader extends HTMLElement {
   }
 
   getAnimatorBackground(index: number) {
-    return `linear-gradient(45deg, ${Array(5).fill('$color').map((_, i) => i === index ? 'white' : 'transparent').join(', ')})`
+    let color = 'white'
+    const parent = this.parentElement
+    if (parent) {
+      const parentStyle = getComputedStyle(parent)
+      color = parentStyle.backgroundColor
+    }
+    return `linear-gradient(44deg, ${Array(5).fill('$color').map((_, i) => i === index ? color : 'transparent').join(', ')})`
   }
 
   init(shadow: ShadowRoot) {
@@ -94,3 +105,9 @@ class LogoLoader extends HTMLElement {
     animate()
   }
 }
+
+if (!customElements.get('logo-loader')) {
+  customElements.define('logo-loader', LogoLoader)
+}
+
+export default LogoLoader
