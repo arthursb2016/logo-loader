@@ -21,37 +21,28 @@ const styles = `
 `
 
 class LogoLoader extends HTMLElement {
-  static observedAttributes: string[] = ['src', 'width', 'height', 'speed']
+  static observedAttributes: string[] = ['src', 'width', 'height']
 
   private currStep = 0
   private timeout: NodeJS.Timeout | null = null
   private speed = 115
 
+  private hasSlotContent = false
+  private elements: { container: HTMLSpanElement, slot: HTMLSlotElement, img: HTMLImageElement, animator: HTMLSpanElement }
+
   constructor() {
     super()
-  }
-
-  connectedCallback() {
-    const shadow = this.attachShadow({ mode: 'open' })
+    this.attachShadow({ mode: 'open' })
 
     const container = document.createElement('span')
     container.setAttribute('class', 'logo-loader-container')
 
-    // const slot = document.createElement('slot')
-    const hasSlot = false
+    const slot = document.createElement('slot')
+    container.appendChild(slot)
 
-    if (hasSlot) {
-      console.warn('Implementation in progress...')
-    } else if (this.hasAttribute('src')) {
-      const img = document.createElement('img')
-      img.setAttribute('class', 'logo-loader-icon')
-      img.setAttribute('width', this.getWidth())
-      img.setAttribute('height', this.getHeight())
-      img.setAttribute('src', this.getAttribute('src')!)
-      container.appendChild(img)
-    } else {
-      console.error('You must set either a src attribute or slot element for the LogoLoader component.')
-    }
+    const img = document.createElement('img')
+    img.setAttribute('class', 'logo-loader-img')
+    container.appendChild(img)
 
     const animator = document.createElement('span')
     animator.setAttribute('class', 'logo-loader-animator')
@@ -60,11 +51,26 @@ class LogoLoader extends HTMLElement {
     const style = document.createElement('style')
     style.textContent = styles;
 
+    this.shadowRoot!.appendChild(style)
+    this.shadowRoot!.appendChild(container)
 
-    shadow.appendChild(style)
-    shadow.appendChild(container)
+    this.elements = { container, slot, img, animator }
+  }
 
-    this.init(shadow)
+  connectedCallback() {
+    this.updateHasSlotContent()
+
+    if (this.hasSlotContent) {
+      const container = this.shadowRoot!.querySelector('.logo-loader-container')
+      this.elements.container.removeChild(this.elements.img)
+    } else if (this.hasAttribute('src')) {
+      this.updateImgAttributes()
+    } else {
+      console.error('You must set either a src attribute or a slot element for the logo-loader component.')
+      return
+    }
+
+    this.init()
   }
 
   disconnectedCallback() {
@@ -72,9 +78,9 @@ class LogoLoader extends HTMLElement {
   }
 
   attributeChangedCallback(name: string, oldValue: any, newValue: any) {
-    console.log(
-      `Attribute ${name} has changed from ${oldValue} to ${newValue}.`,
-    );
+    this.updateHasSlotContent()
+    if (this.hasSlotContent) return
+    this.updateImgAttributes()
   }
 
   getWidth() {
@@ -95,14 +101,23 @@ class LogoLoader extends HTMLElement {
     return `linear-gradient(44deg, ${Array(5).fill('$color').map((_, i) => i === index ? color : 'transparent').join(', ')})`
   }
 
-  init(shadow: ShadowRoot) {
-    const animator = shadow.querySelector('.logo-loader-animator') as HTMLElement
+  init() {
     const animate = () => {
-      animator!.style.setProperty('background-image', this.getAnimatorBackground(this.currStep))
+      this.elements.animator.style.setProperty('background-image', this.getAnimatorBackground(this.currStep))
       this.currStep = this.currStep === 4 ? 0 : this.currStep + 1
       this.timeout = setTimeout(animate, this.speed)
     }
     animate()
+  }
+
+  updateHasSlotContent() {
+    this.hasSlotContent = this.elements.slot.assignedNodes().length > 0
+  }
+
+  updateImgAttributes() {
+    this.elements.img.setAttribute('width', this.getWidth())
+    this.elements.img.setAttribute('height', this.getHeight())
+    this.elements.img.setAttribute('src', this.getAttribute('src')!)
   }
 }
 
