@@ -21,7 +21,7 @@ const styles = `
 `
 
 class LogoLoader extends HTMLElement {
-  static observedAttributes: string[] = ['src', 'width', 'height']
+  static observedAttributes: string[] = ['src', 'width', 'height', 'pause']
 
   private currStep = 0
   private timeout: NodeJS.Timeout | null = null
@@ -61,7 +61,6 @@ class LogoLoader extends HTMLElement {
     this.updateHasSlotContent()
 
     if (this.hasSlotContent) {
-      const container = this.shadowRoot!.querySelector('.logo-loader-container')
       this.elements.container.removeChild(this.elements.img)
     } else if (this.hasAttribute('src')) {
       this.updateImgAttributes()
@@ -70,17 +69,30 @@ class LogoLoader extends HTMLElement {
       return
     }
 
-    this.init()
+    if (!this.isPaused()) this.start()
   }
 
   disconnectedCallback() {
-    if (this.timeout) clearTimeout(this.timeout)
+    this.stop()
   }
 
   attributeChangedCallback(name: string, oldValue: any, newValue: any) {
+    if (name === 'pause') {
+      if (this.isPaused()) {
+        this.stop()
+      } else {
+        this.start()
+      }
+      return
+    }
     this.updateHasSlotContent()
     if (this.hasSlotContent) return
     this.updateImgAttributes()
+  }
+
+  isPaused() {
+    const value = this.getAttribute('pause')
+    return (this.hasAttribute('pause') && !value) || value === 'true'
   }
 
   getWidth() {
@@ -101,7 +113,7 @@ class LogoLoader extends HTMLElement {
     return `linear-gradient(44deg, ${Array(5).fill('$color').map((_, i) => i === index ? color : 'transparent').join(', ')})`
   }
 
-  init() {
+  start() {
     const animate = () => {
       const isLastStep = this.currStep === 4
       this.elements.animator.style.setProperty('background-image', this.getAnimatorBackground(this.currStep))
@@ -109,6 +121,12 @@ class LogoLoader extends HTMLElement {
       this.timeout = setTimeout(animate, this.speed)
     }
     animate()
+  }
+
+  stop() {
+    this.elements.animator.style.setProperty('background-image', 'none')
+    this.currStep = 0
+    if (this.timeout) clearTimeout(this.timeout)
   }
 
   updateHasSlotContent() {
