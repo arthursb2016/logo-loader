@@ -14,8 +14,8 @@ export default {
   ],
   onwarn(warning, warn) {
     if (warning.code === 'THIS_IS_UNDEFINED' && /webcomponents-bundle\.js/.test(warning.loc?.file || '')) {
-      return;
+      return
     }
-    warn(warning); // Let Rollup handle other warnings as usual
+    warn(warning)
   }
 };
