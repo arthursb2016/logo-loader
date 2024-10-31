@@ -103,8 +103,9 @@ class LogoLoader extends HTMLElement {
 
   init() {
     const animate = () => {
+      const isLastStep = this.currStep === 4
       this.elements.animator.style.setProperty('background-image', this.getAnimatorBackground(this.currStep))
-      this.currStep = this.currStep === 4 ? 0 : this.currStep + 1
+      this.currStep = isLastStep ? 0 : this.currStep + 1
       this.timeout = setTimeout(animate, this.speed)
     }
     animate()
