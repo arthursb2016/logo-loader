@@ -1,6 +1,6 @@
 # logo-loader
 
-Web component to seamlessly create a loader from your logo or icon
+Web component to seamlessly create a loader from your logo image or icon
 
 ## Installation
 
@@ -19,7 +19,7 @@ import 'logo-loader'
 
 ## Demo
 
-...
+![Logo Loader Demo](logo-loader-demo.gif)
 
 ## Usage
 
@@ -29,12 +29,12 @@ import 'logo-loader'
 </body>
 ```
 
-or pass a slot:
+or pass the image/icon as a slot:
 
 ```HTML
 <body>
   <logo-loader>
-    <img src="my-icon.png">
+    <img src="my-logo.png">
   </logo-loader>
 </body>
 ```
@@ -55,7 +55,7 @@ or
 <logo-loader src="..." pause="true"></logo-loader>
 ```
 
-### width & height (do not apply to slots, only when using the src attribute)
+### width & height (works only when using the src attribute)
 
 Sets the logo size:
 
@@ -71,4 +71,5 @@ or
 
 ## Note
 
-You must apply the component in a single colored background in order for it correctly display
+1. You must apply the component in a single colored background in order for it correctly animate
+2. You might find some distortions if the parent background has an alpha channel (e.g. `rgba(x, x, x, 0.3)`)

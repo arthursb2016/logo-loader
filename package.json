@@ -2,7 +2,7 @@
 {
   "name": "logo-loader",
   "version": "0.0.1",
-  "description": "Web component to seamlessly create a loader from your logo or icon",
+  "description": "Web component to seamlessly create a loader from your logo image or icon",
   "main": "dist/logoLoader.esm.js",
   "types": "logoLoader.d.ts",
   "type": "module",
