@@ -1,11 +1,31 @@
+
 {
+  "name": "logo-loader",
+  "version": "0.0.1",
+  "description": "Web component to seamlessly create a loader from your logo or icon",
+  "main": "dist/logoLoader.esm.js",
+  "types": "logoLoader.d.ts",
   "type": "module",
+  "files": ["dist"],
   "scripts": {
     "build": "rollup -c",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "postbuild": "terser dist/logoLoader.esm.js -o dist/logoLoader.esm.min.js"
   },
+  "keywords": [
+    "logo",
+    "loader",
+    "webcomponent"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arthursb2016/logo-loader"
+  },
+  "author": "Arthur Borba <artsborba@gmail.com>",
+  "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.1",
     "@types/node": "^22.7.9",
     "rollup": "^4.24.0",

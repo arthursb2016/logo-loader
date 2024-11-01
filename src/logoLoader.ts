@@ -1,3 +1,8 @@
+/*!
+  * The logo-laoder package <https://www.npmjs.com/package/logo-loader>
+  * @author   Arthur Borba <https://arthurborba.dev>
+  * @license  MIT
+  */
 if (!window.customElements) {
   import('@webcomponents/webcomponentsjs/webcomponents-bundle.js');
 }
@@ -103,13 +108,23 @@ class LogoLoader extends HTMLElement {
     return this.getAttribute('height') ?? 'auto'
   }
 
-  getAnimatorBackground(index: number) {
+  getParentBackgroundColor() {
     let color = 'white'
     const parent = this.parentElement
     if (parent) {
       const parentStyle = getComputedStyle(parent)
       color = parentStyle.backgroundColor
     }
+    if (color === 'rgba(0, 0, 0, 0)') {
+      color = 'white'
+    } else if (color.startsWith('rgba') && color.endsWith('0)')) {
+      color = 'black'
+    }
+    return color
+  }
+
+  getAnimatorBackground(index: number) {
+    const color = this.getParentBackgroundColor()
     return `linear-gradient(44deg, ${Array(5).fill('$color').map((_, i) => i === index ? color : 'transparent').join(', ')})`
   }
 
