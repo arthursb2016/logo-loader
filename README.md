@@ -6,20 +6,26 @@ Web component to seamlessly create a loader from your logo image or icon
 
 ```HTML
 <head>
-  <script type="module" src="https://cdn.jsdelivr.net/npm/logo-loader@0.0.1/dist/logoLoader.esm.min.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/logo-loader@0.1.0/dist/logoLoader.esm.min.js"></script>
 </head>
 ```
 
 or
 
 ```JavaScript
-// javascript file
+// main.js|ts
 import 'logo-loader'
 ```
 
 ## Demo
 
+Default:
+
 ![Logo Loader Demo](logo-loader-demo.gif)
+
+Pulse mode:
+
+![Logo Loader Demo](logo-loader-demo-pulse-mode.gif)
 
 ## Usage
 
@@ -34,12 +40,20 @@ or pass the image/icon as a slot:
 ```HTML
 <body>
   <logo-loader>
-    <img src="my-logo.png">
+    <img src="my-logo.svg">
   </logo-loader>
 </body>
 ```
 
 ## Attributes
+
+### mode
+
+Defines the animation style ("default" or "pulse")
+
+```HTML
+<logo-loader src="..." mode="pulse"></logo-loader>
+```
 
 ### pause
 

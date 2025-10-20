@@ -15,6 +15,11 @@ const styles = `
     max-width: 100%;
     height: auto;
   }
+  .logo-loader-logo-display {
+    width: auto;
+    height: auto;
+    transition: transform 120ms ease-in;
+  }
   .logo-loader-animator {
     width: 100%;
     height: 100%;
@@ -26,14 +31,20 @@ const styles = `
 `
 
 class LogoLoader extends HTMLElement {
-  static observedAttributes: string[] = ['src', 'width', 'height', 'pause']
+  static observedAttributes: string[] = ['src', 'mode', 'width', 'height', 'pause']
 
   private currStep = 0
+  private stepCount = 5
   private timeout: NodeJS.Timeout | null = null
-  private speed = 115
 
   private hasSlotContent = false
-  private elements: { container: HTMLSpanElement, slot: HTMLSlotElement, img: HTMLImageElement, animator: HTMLSpanElement }
+  private elements: {
+    container: HTMLSpanElement,
+    logoDisplay: HTMLDivElement,
+    slot: HTMLSlotElement,
+    img: HTMLImageElement,
+    animator: HTMLSpanElement
+  }
 
   constructor() {
     super()
@@ -42,12 +53,17 @@ class LogoLoader extends HTMLElement {
     const container = document.createElement('span')
     container.setAttribute('class', 'logo-loader-container')
 
+    const logoDisplay = document.createElement('div')
+    logoDisplay.setAttribute('class', 'logo-loader-logo-display')
+
     const slot = document.createElement('slot')
-    container.appendChild(slot)
+    logoDisplay.appendChild(slot)
 
     const img = document.createElement('img')
     img.setAttribute('class', 'logo-loader-img')
-    container.appendChild(img)
+    logoDisplay.appendChild(img)
+
+    container.appendChild(logoDisplay)
 
     const animator = document.createElement('span')
     animator.setAttribute('class', 'logo-loader-animator')
@@ -59,14 +75,14 @@ class LogoLoader extends HTMLElement {
     this.shadowRoot!.appendChild(style)
     this.shadowRoot!.appendChild(container)
 
-    this.elements = { container, slot, img, animator }
+    this.elements = { container, logoDisplay, slot, img, animator }
   }
 
   connectedCallback() {
     this.updateHasSlotContent()
 
     if (this.hasSlotContent) {
-      this.elements.container.removeChild(this.elements.img)
+      this.elements.logoDisplay.removeChild(this.elements.img)
     } else if (this.hasAttribute('src')) {
       this.updateImgAttributes()
     } else {
@@ -108,6 +124,11 @@ class LogoLoader extends HTMLElement {
     return this.getAttribute('height') ?? 'auto'
   }
 
+  getMode() {
+    const modeParam = this.getAttribute('mode')
+    return modeParam && ['default', 'pulse'].includes(modeParam) ? modeParam : 'default'
+  }
+
   getParentBackgroundColor() {
     let color = 'white'
     const parent = this.parentElement
@@ -125,15 +146,38 @@ class LogoLoader extends HTMLElement {
 
   getAnimatorBackground(index: number) {
     const color = this.getParentBackgroundColor()
-    return `linear-gradient(44deg, ${Array(5).fill('$color').map((_, i) => i === index ? color : 'transparent').join(', ')})`
+    if (this.getMode() === 'pulse') {
+      return `radial-gradient(circle, ${Array(this.stepCount).fill('$color').map((_, i) => i === index ? color : 'transparent').join(', ')})`
+    }
+    return `linear-gradient(44deg, ${Array(this.stepCount).fill('$color').map((_, i) => i === index ? color : 'transparent').join(', ')})`
+  }
+
+  getContainerTransform(index: number) {
+    if (index === 0) {
+      return 'scale(0.85)'
+    }
+    if (index === 1) {
+      return 'scale(0.93)'
+    }
+    return 'scale(0.98)'
+  }
+
+  getAnimationSpeed(isLastStep: boolean) {
+    if (this.getMode() === 'pulse') {
+      return isLastStep ? 550 : 130
+    }
+    return 115
   }
 
   start() {
     const animate = () => {
-      const isLastStep = this.currStep === 4
+      const isLastStep = this.currStep === this.stepCount - 1
       this.elements.animator.style.setProperty('background-image', this.getAnimatorBackground(this.currStep))
+      if (this.getMode() === 'pulse') {
+        this.elements.logoDisplay.style.setProperty('transform', this.getContainerTransform(this.currStep))
+      }
       this.currStep = isLastStep ? 0 : this.currStep + 1
-      this.timeout = setTimeout(animate, this.speed)
+      this.timeout = setTimeout(animate, this.getAnimationSpeed(isLastStep))
     }
     animate()
   }
