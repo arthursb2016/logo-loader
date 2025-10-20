@@ -21,7 +21,7 @@ import 'logo-loader'
 
 #### Default:
 
-<img src="logo-laoder-demo-default-mode.gif" alt="Logo Loader Demo - Default Mode" width="300px" />
+<img src="logo-loader-demo-default-mode.gif" alt="Logo Loader Demo - Default Mode" width="300px" />
 
 #### Pulse mode:
 
