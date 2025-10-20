@@ -19,13 +19,13 @@ import 'logo-loader'
 
 ## Demo
 
-Default:
+#### Default:
 
-![Logo Loader Demo](logo-loader-demo.gif)
+<img src="logo-laoder-demo-default-mode.gif" alt="Logo Loader Demo - Default Mode" width="300px" />
 
-Pulse mode:
+#### Pulse mode:
 
-![Logo Loader Demo](logo-loader-demo-pulse-mode.gif)
+<img src="logo-loader-demo-pulse-mode.gif" alt="Logo Loader Demo - Pulse Mode" width="300px" />
 
 ## Usage
 
