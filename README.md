@@ -4,6 +4,8 @@ Web component to seamlessly create a loader from your logo image or icon
 
 ## Installation
 
+#### CDN / Script tag
+
 ```HTML
 <head>
   <script type="module" src="https://cdn.jsdelivr.net/npm/logo-loader@0.1.0/dist/logoLoader.esm.min.js"></script>
@@ -11,6 +13,14 @@ Web component to seamlessly create a loader from your logo image or icon
 ```
 
 or
+
+#### NPM
+
+```
+npm i logo-loader
+```
+
+then
 
 ```JavaScript
 // main.js|ts
