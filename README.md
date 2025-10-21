@@ -8,7 +8,7 @@ Web component to seamlessly create a loader from your logo image or icon
 
 ```HTML
 <head>
-  <script type="module" src="https://cdn.jsdelivr.net/npm/logo-loader@0.1.0/dist/logoLoader.esm.min.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/logo-loader@0.1.1/dist/logoLoader.esm.min.js"></script>
 </head>
 ```
 
