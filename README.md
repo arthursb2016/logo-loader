@@ -31,11 +31,11 @@ import 'logo-loader'
 
 #### Default:
 
-<img src="demo/logo-loader-demo-default.gif" alt="Logo Loader Demo - Default Mode" width="300px" />
+<img src="https://lnx-tech.atl1.cdn.digitaloceanspaces.com/open-source/logo-loader/default-animation.gif" alt="Logo Loader Demo - Default Mode" width="300px" />
 
 #### Pulse mode:
 
-<img src="demo/logo-loader-demo-pulse-mode.gif" alt="Logo Loader Demo - Pulse Mode" width="300px" />
+<img src="https://lnx-tech.atl1.cdn.digitaloceanspaces.com/open-source/logo-loader/pulse-animation.gif" alt="Logo Loader Demo - Pulse Mode" width="300px" />
 
 ## Usage
 
