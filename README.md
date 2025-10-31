@@ -8,7 +8,7 @@ Web component to seamlessly create a loader from your logo image or icon
 
 ```HTML
 <head>
-  <script type="module" src="https://cdn.jsdelivr.net/npm/logo-loader@0.1.1/dist/logoLoader.esm.min.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/logo-loader@0.1.3/dist/logoLoader.esm.min.js"></script>
 </head>
 ```
 
@@ -31,7 +31,7 @@ import 'logo-loader'
 
 #### Default:
 
-<img src="https://lnx-tech.atl1.cdn.digitaloceanspaces.com/open-source/logo-loader/default-animation.gif" alt="Logo Loader Demo - Default Mode" width="300px" />
+<img src="https://lnx-tech.atl1.cdn.digitaloceanspaces.com/open-source/logo-loader/default-animation.comp.gif" alt="Logo Loader Demo - Default Mode" width="300px" />
 
 #### Pulse mode:
 
