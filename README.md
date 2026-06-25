@@ -35,7 +35,7 @@ import 'logo-loader'
 
 #### Pulse mode:
 
-<img src="https://lnx-tech.atl1.cdn.digitaloceanspaces.com/open-source/logo-loader/pulse-mode.gif" alt="Logo Loader Demo - Pulse Mode" width="280px" />
+<img src="https://lnx-tech.atl1.cdn.digitaloceanspaces.com/open-source/logo-loader/pulse-mode.gif" alt="Logo Loader Demo - Pulse Mode" width="300px" />
 
 ## Usage
 
