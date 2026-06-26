@@ -26,7 +26,6 @@ const styles = `
     top: 0;
     left: 0;
     position: absolute;
-    opacity: 0.3;
   }
 `
 
@@ -34,7 +33,6 @@ class LogoLoader extends HTMLElement {
   static observedAttributes: string[] = ['src', 'mode', 'width', 'height', 'pause']
 
   private currStep = 0
-  private stepCount = 5
   private timeout: NodeJS.Timeout | null = null
 
   private hasSlotContent = false
@@ -126,7 +124,7 @@ class LogoLoader extends HTMLElement {
 
   getMode() {
     const modeParam = this.getAttribute('mode')
-    return modeParam && ['default', 'pulse'].includes(modeParam) ? modeParam : 'default'
+    return modeParam && ['classic', 'pulse', 'buildup'].includes(modeParam) ? modeParam : 'classic'
   }
 
   getParentBackgroundColor() {
@@ -144,12 +142,39 @@ class LogoLoader extends HTMLElement {
     return color
   }
 
-  getAnimatorBackground(index: number) {
+  getAnimatorBackgroundKey() {
+    if (this.getMode() === 'buildup') {
+      return 'background'
+    }
+    return 'background-image'
+  }
+
+  getAnimatorBackgroundValue(index: number) {
     const color = this.getParentBackgroundColor()
     if (this.getMode() === 'pulse') {
-      return `radial-gradient(circle, ${Array(this.stepCount).fill('$color').map((_, i) => i === index ? color : 'transparent').join(', ')})`
+      return `radial-gradient(circle, ${Array(this.getStepCount()).fill('$color').map((_, i) => i === index ? color : 'transparent').join(', ')})`
     }
-    return `linear-gradient(44deg, ${Array(this.stepCount).fill('$color').map((_, i) => i === index ? color : 'transparent').join(', ')})`
+    if (this.getMode() === 'buildup') {
+      return `repeating-linear-gradient(
+          180deg,
+          rgba(255,255,255, ${index >= 9 ? 0 : 1.0}) 0% 10%,
+          rgba(255,255,255, ${index >= 8 ? 0: 0.9}) 10% 20%,
+          rgba(255,255,255, ${index >= 7 ? 0: 0.8}) 20% 30%,
+          rgba(255,255,255, ${index >= 6 ? 0: 0.7}) 30% 40%,
+          rgba(255,255,255, ${index >= 5 ? 0: 0.6}) 40% 50%,
+          rgba(255,255,255, ${index >= 4 ? 0: 0.5}) 50% 60%,
+          rgba(255,255,255, ${index >= 3 ? 0: 0.4}) 60% 70%,
+          rgba(255,255,255, ${index >= 2 ? 0: 0.3}) 70% 80%,
+          rgba(255,255,255, ${index >= 1 ? 0: 0.2}) 80% 90%,
+          rgba(255,255,255, ${index >= 0 ? 0: 0.1}) 90% 100%
+      ),
+      repeating-linear-gradient(
+          90deg,
+          rgba(255,255,255, 0.25) 0 10px,
+          rgba(255,255,255, 0.15) 10px 20px
+      )`
+    }
+    return `linear-gradient(44deg, ${Array(this.getStepCount()).fill('$color').map((_, i) => i === index ? color : 'transparent').join(', ')})`
   }
 
   getContainerTransform(index: number) {
@@ -166,13 +191,31 @@ class LogoLoader extends HTMLElement {
     if (this.getMode() === 'pulse') {
       return isLastStep ? 550 : 130
     }
+    if (this.getMode() === 'buildup') {
+      return isLastStep ? 330 : 180
+    }
     return 115
   }
 
+  getStepCount() {
+    if (this.getMode() === 'buildup') {
+      return 10
+    }
+    return 5
+  }
+
+  getAnimatorOpacity() {
+    if (this.getMode() === 'buildup') {
+      return '0.8'
+    }
+    return '0.3'
+  }
+
   start() {
+    this.elements.animator.style.setProperty('opacity', this.getAnimatorOpacity())
     const animate = () => {
-      const isLastStep = this.currStep === this.stepCount - 1
-      this.elements.animator.style.setProperty('background-image', this.getAnimatorBackground(this.currStep))
+      const isLastStep = this.currStep === this.getStepCount() - 1
+      this.elements.animator.style.setProperty(this.getAnimatorBackgroundKey(), this.getAnimatorBackgroundValue(this.currStep))
       if (this.getMode() === 'pulse') {
         this.elements.logoDisplay.style.setProperty('transform', this.getContainerTransform(this.currStep))
       }
@@ -183,6 +226,7 @@ class LogoLoader extends HTMLElement {
   }
 
   stop() {
+    this.elements.animator.style.setProperty('opacity', '0')
     this.elements.animator.style.setProperty('background-image', 'none')
     this.currStep = 0
     if (this.timeout) clearTimeout(this.timeout)
