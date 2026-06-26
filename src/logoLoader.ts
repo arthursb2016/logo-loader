@@ -34,6 +34,8 @@ class LogoLoader extends HTMLElement {
 
   private currStep = 0
   private timeout: NodeJS.Timeout | null = null
+  private rgbTemplateColorCache = new Map<string, string>()
+  private buildupBackgroundOptionIndex = 0
 
   private hasSlotContent = false
   private elements: {
@@ -128,16 +130,16 @@ class LogoLoader extends HTMLElement {
   }
 
   getParentBackgroundColor() {
-    let color = 'white'
+    let color = 'rgb(255, 255, 255)'
     const parent = this.parentElement
     if (parent) {
       const parentStyle = getComputedStyle(parent)
       color = parentStyle.backgroundColor
     }
     if (color === 'rgba(0, 0, 0, 0)') {
-      color = 'white'
+      color = 'rgb(255, 255, 255)'
     } else if (color.startsWith('rgba') && color.endsWith('0)')) {
-      color = 'black'
+      color = 'rgb(0, 0, 0)'
     }
     return color
   }
@@ -149,32 +151,58 @@ class LogoLoader extends HTMLElement {
     return 'background-image'
   }
 
+  getBuildUpBackgroundOptions(rgbaTemplate: string) {
+    return [
+      `repeating-linear-gradient(
+          90deg,
+          ${rgbaTemplate.replace('$alpha', '0.35')} 0 10%,
+          ${rgbaTemplate.replace('$alpha', '0.25')} 10% 20%
+      )`,
+      `repeating-linear-gradient(
+          90deg,
+          ${rgbaTemplate.replace('$alpha', '0.25')} 0 10%,
+          ${rgbaTemplate.replace('$alpha', '0.35')} 10% 20%
+      )`
+    ]
+  }
+
   getAnimatorBackgroundValue(index: number) {
     const color = this.getParentBackgroundColor()
     if (this.getMode() === 'pulse') {
       return `radial-gradient(circle, ${Array(this.getStepCount()).fill('$color').map((_, i) => i === index ? color : 'transparent').join(', ')})`
     }
     if (this.getMode() === 'buildup') {
-      return `repeating-linear-gradient(
-          180deg,
-          rgba(255,255,255, ${index >= 9 ? 0 : 1.0}) 0% 10%,
-          rgba(255,255,255, ${index >= 8 ? 0: 0.9}) 10% 20%,
-          rgba(255,255,255, ${index >= 7 ? 0: 0.8}) 20% 30%,
-          rgba(255,255,255, ${index >= 6 ? 0: 0.7}) 30% 40%,
-          rgba(255,255,255, ${index >= 5 ? 0: 0.6}) 40% 50%,
-          rgba(255,255,255, ${index >= 4 ? 0: 0.5}) 50% 60%,
-          rgba(255,255,255, ${index >= 3 ? 0: 0.4}) 60% 70%,
-          rgba(255,255,255, ${index >= 2 ? 0: 0.3}) 70% 80%,
-          rgba(255,255,255, ${index >= 1 ? 0: 0.2}) 80% 90%,
-          rgba(255,255,255, ${index >= 0 ? 0: 0.1}) 90% 100%
-      ),
-      repeating-linear-gradient(
-          90deg,
-          rgba(255,255,255, 0.25) 0 10px,
-          rgba(255,255,255, 0.15) 10px 20px
-      )`
+      const rgbaTemplate = this.rgbToRgbaTemplate(color)
+      const options = this.getBuildUpBackgroundOptions(rgbaTemplate)
+      const result = options[this.buildupBackgroundOptionIndex]
+      this.buildupBackgroundOptionIndex = (this.buildupBackgroundOptionIndex + 1) % options.length
+      return result
     }
     return `linear-gradient(44deg, ${Array(this.getStepCount()).fill('$color').map((_, i) => i === index ? color : 'transparent').join(', ')})`
+  }
+
+  getAnimatorHeightValue(index: number) {
+    let percentage = 100
+    if (this.getMode() === 'buildup') {
+      const stepCount = this.getStepCount()
+      percentage = 100 - (index * (100 / (stepCount - 1)))
+    }
+    return `${percentage}%`
+  }
+
+  rgbToRgbaTemplate(color: string): string {
+    if (this.rgbTemplateColorCache.has(color)) {
+      return this.rgbTemplateColorCache.get(color)!;
+    }
+    const match = color.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*[\d.]+\s*)?\)/);
+    if (!match) {
+      console.error('logo-loader: Invalid parent element background-color format, expected rgb or rgba.', color);
+      return color
+    }
+    const [, r, g, b] = match;
+    const result = `rgba(${r}, ${g}, ${b}, $alpha)`;
+    this.rgbTemplateColorCache.set(color, result);
+    return result;
   }
 
   getContainerTransform(index: number) {
@@ -192,21 +220,21 @@ class LogoLoader extends HTMLElement {
       return isLastStep ? 550 : 130
     }
     if (this.getMode() === 'buildup') {
-      return isLastStep ? 330 : 180
+      return isLastStep ? 430 : 180
     }
     return 115
   }
 
   getStepCount() {
     if (this.getMode() === 'buildup') {
-      return 10
+      return 11
     }
     return 5
   }
 
   getAnimatorOpacity() {
     if (this.getMode() === 'buildup') {
-      return '0.8'
+      return '1'
     }
     return '0.3'
   }
@@ -215,6 +243,7 @@ class LogoLoader extends HTMLElement {
     this.elements.animator.style.setProperty('opacity', this.getAnimatorOpacity())
     const animate = () => {
       const isLastStep = this.currStep === this.getStepCount() - 1
+      this.elements.animator.style.setProperty('height', this.getAnimatorHeightValue(this.currStep))
       this.elements.animator.style.setProperty(this.getAnimatorBackgroundKey(), this.getAnimatorBackgroundValue(this.currStep))
       if (this.getMode() === 'pulse') {
         this.elements.logoDisplay.style.setProperty('transform', this.getContainerTransform(this.currStep))
