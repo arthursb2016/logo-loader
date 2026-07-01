@@ -155,14 +155,14 @@ class LogoLoader extends HTMLElement {
     return [
       `repeating-linear-gradient(
           90deg,
-          ${rgbaTemplate.replace('$alpha', '0.35')} 0 10%,
-          ${rgbaTemplate.replace('$alpha', '0.25')} 10% 20%
-      )`,
+          ${rgbaTemplate.replace('$alpha', '0.5')} 0 10%,
+          ${rgbaTemplate.replace('$alpha', '0.3')} 10% 20%
+      ), repeating-linear-gradient(180deg, ${rgbaTemplate.replace('$alpha', '0.1')}, transparent max(10%, 10px)`,
       `repeating-linear-gradient(
           90deg,
-          ${rgbaTemplate.replace('$alpha', '0.25')} 0 10%,
-          ${rgbaTemplate.replace('$alpha', '0.35')} 10% 20%
-      )`
+          ${rgbaTemplate.replace('$alpha', '0.3')} 0 10%,
+          ${rgbaTemplate.replace('$alpha', '0.5')} 10% 20%
+      ), repeating-linear-gradient(180deg, ${rgbaTemplate.replace('$alpha', '0.1')}, transparent max(10%, 10px)`
     ]
   }
 
@@ -173,10 +173,17 @@ class LogoLoader extends HTMLElement {
     }
     if (this.getMode() === 'buildup') {
       const rgbaTemplate = this.rgbToRgbaTemplate(color)
-      const options = this.getBuildUpBackgroundOptions(rgbaTemplate)
-      const result = options[this.buildupBackgroundOptionIndex]
-      this.buildupBackgroundOptionIndex = (this.buildupBackgroundOptionIndex + 1) % options.length
-      return result
+      const xRepeatingLinearGradientLines = Array(this.getStepCount() - 1)
+            .fill(rgbaTemplate + ' $sp $ep')
+            .map((_, i) => _
+              .replace('$alpha', i >= index ? '0.5' : '0.3')
+              .replace('$sp', `${i * 10}%`)
+              .replace('$ep', `${(i + 1) * 10}%`)
+            ).join(', ')
+      const xRepeatingLinearGradient = `repeating-linear-gradient(90deg, ${xRepeatingLinearGradientLines})`
+      const yRepeatingLinearGradient = `repeating-linear-gradient(180deg, ${rgbaTemplate.replace('$alpha', '0.1')}, transparent max(10%, 10px)`
+      return `${xRepeatingLinearGradient}, ${yRepeatingLinearGradient}`
+
     }
     return `linear-gradient(44deg, ${Array(this.getStepCount()).fill('$color').map((_, i) => i === index ? color : 'transparent').join(', ')})`
   }
@@ -220,7 +227,7 @@ class LogoLoader extends HTMLElement {
       return isLastStep ? 550 : 130
     }
     if (this.getMode() === 'buildup') {
-      return isLastStep ? 430 : 180
+      return isLastStep ? 800 : 400
     }
     return 115
   }
