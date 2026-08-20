@@ -22,6 +22,9 @@ const styles = `
     left: 0;
     position: absolute;
   }
+  .logo-loader-animator.buildup {
+    transition: opacity 700ms ease-out;
+  }
 `
 
 class LogoLoader extends HTMLElement {
@@ -31,6 +34,7 @@ class LogoLoader extends HTMLElement {
   private timeout: NodeJS.Timeout | null = null
   private rgbTemplateColorCache = new Map<string, string>()
   private buildupBackgroundOptionIndex = 0
+  private currentModeClass: string | null = null
 
   private hasSlotContent = false
   private elements: {
@@ -74,6 +78,7 @@ class LogoLoader extends HTMLElement {
   }
 
   connectedCallback() {
+    this.updateAnimatorModeClass()
     this.updateHasSlotContent()
 
     if (this.hasSlotContent) {
@@ -93,6 +98,9 @@ class LogoLoader extends HTMLElement {
   }
 
   attributeChangedCallback(name: string, oldValue: any, newValue: any) {
+    if (name === 'mode') {
+      this.updateAnimatorModeClass()
+    }
     if (name === 'pause') {
       if (this.isPaused()) {
         this.stop()
@@ -104,6 +112,16 @@ class LogoLoader extends HTMLElement {
     this.updateHasSlotContent()
     if (this.hasSlotContent) return
     this.updateImgAttributes()
+  }
+
+  updateAnimatorModeClass() {
+    const mode = this.getMode()
+    if (this.currentModeClass === mode) return
+    if (this.currentModeClass) {
+      this.elements.animator.classList.remove(this.currentModeClass)
+    }
+    this.elements.animator.classList.add(mode)
+    this.currentModeClass = mode
   }
 
   isPaused() {
@@ -168,7 +186,7 @@ class LogoLoader extends HTMLElement {
       if (index >= ((this.getStepCount() * 2) / 3)) {
         yAlphaValue = '0.1'
       }
-      const yRepeatingLinearGradient = `repeating-linear-gradient(90deg, ${rgbaTemplate.replace('$alpha', yAlphaValue)} 0 1px, transparent ${(30 + ((index % 2 === 0 ? 1 : -1) * 2.5)) - (index * 1)}px`
+      const yRepeatingLinearGradient = `repeating-linear-gradient(90deg, ${rgbaTemplate.replace('$alpha', yAlphaValue)} 0 1px, transparent ${(30 + ((index % 2 === 0 ? 1 : -1) * 2.5)) - (index * 1.5)}px`
       return `${xRepeatingLinearGradient}, ${yRepeatingLinearGradient}`
 
     }
