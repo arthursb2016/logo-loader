@@ -22,7 +22,6 @@ const styles = `
   }
   .logo-loader-animator {
     width: 100%;
-    height: 100%;
     top: 0;
     left: 0;
     position: absolute;
@@ -151,21 +150,6 @@ class LogoLoader extends HTMLElement {
     return 'background-image'
   }
 
-  getBuildUpBackgroundOptions(rgbaTemplate: string) {
-    return [
-      `repeating-linear-gradient(
-          90deg,
-          ${rgbaTemplate.replace('$alpha', '0.5')} 0 10%,
-          ${rgbaTemplate.replace('$alpha', '0.3')} 10% 20%
-      ), repeating-linear-gradient(180deg, ${rgbaTemplate.replace('$alpha', '0.1')}, transparent max(10%, 10px)`,
-      `repeating-linear-gradient(
-          90deg,
-          ${rgbaTemplate.replace('$alpha', '0.3')} 0 10%,
-          ${rgbaTemplate.replace('$alpha', '0.5')} 10% 20%
-      ), repeating-linear-gradient(180deg, ${rgbaTemplate.replace('$alpha', '0.1')}, transparent max(10%, 10px)`
-    ]
-  }
-
   getAnimatorBackgroundValue(index: number) {
     const color = this.getParentBackgroundColor()
     if (this.getMode() === 'pulse') {
@@ -176,12 +160,19 @@ class LogoLoader extends HTMLElement {
       const xRepeatingLinearGradientLines = Array(this.getStepCount() - 1)
             .fill(rgbaTemplate + ' $sp $ep')
             .map((_, i) => _
-              .replace('$alpha', i >= index ? '0.5' : '0.3')
-              .replace('$sp', `${i * 10}%`)
-              .replace('$ep', `${(i + 1) * 10}%`)
+              .replace('$alpha', i >= index ? '1' : '0')
+              .replace('$sp', `${i * 5}%`)
+              .replace('$ep', `${(i + 1) * 5}%`)
             ).join(', ')
-      const xRepeatingLinearGradient = `repeating-linear-gradient(90deg, ${xRepeatingLinearGradientLines})`
-      const yRepeatingLinearGradient = `repeating-linear-gradient(180deg, ${rgbaTemplate.replace('$alpha', '0.1')}, transparent max(10%, 10px)`
+      const xRepeatingLinearGradient = `repeating-linear-gradient(0deg, ${xRepeatingLinearGradientLines})`
+      let yAlphaValue = '0.3'
+      if (index >= (this.getStepCount() / 3)) {
+        yAlphaValue = '0.2'
+      }
+      if (index >= ((this.getStepCount() * 2) / 3)) {
+        yAlphaValue = '0.1'
+      }
+      const yRepeatingLinearGradient = `repeating-linear-gradient(90deg, ${rgbaTemplate.replace('$alpha', yAlphaValue)} 0 1px, transparent ${(30 + ((index % 2 === 0 ? 1 : -1) * 2.5)) - (index * 1)}px`
       return `${xRepeatingLinearGradient}, ${yRepeatingLinearGradient}`
 
     }
@@ -192,7 +183,9 @@ class LogoLoader extends HTMLElement {
     let percentage = 100
     if (this.getMode() === 'buildup') {
       const stepCount = this.getStepCount()
-      percentage = 100 - (index * (100 / (stepCount - 1)))
+      const stepsThrough = stepCount - 1
+      const percentageValue = 100 - ((index * (100 / stepsThrough)) + (index * 4))
+      percentage = percentageValue > 0 ? percentageValue : 0
     }
     return `${percentage}%`
   }
@@ -222,19 +215,19 @@ class LogoLoader extends HTMLElement {
     return 'scale(0.98)'
   }
 
-  getAnimationSpeed(isLastStep: boolean) {
+  getAnimationSpeed(isLastStep: boolean, currStep: number) {
     if (this.getMode() === 'pulse') {
       return isLastStep ? 550 : 130
     }
     if (this.getMode() === 'buildup') {
-      return isLastStep ? 800 : 400
+      return isLastStep ? 700 : (150 - (currStep * 3.75))
     }
     return 115
   }
 
   getStepCount() {
     if (this.getMode() === 'buildup') {
-      return 11
+      return 41
     }
     return 5
   }
@@ -256,7 +249,7 @@ class LogoLoader extends HTMLElement {
         this.elements.logoDisplay.style.setProperty('transform', this.getContainerTransform(this.currStep))
       }
       this.currStep = isLastStep ? 0 : this.currStep + 1
-      this.timeout = setTimeout(animate, this.getAnimationSpeed(isLastStep))
+      this.timeout = setTimeout(animate, this.getAnimationSpeed(isLastStep, this.currStep))
     }
     animate()
   }
