@@ -12,10 +12,4 @@ export default {
     resolve(),
     typescript(),
   ],
-  onwarn(warning, warn) {
-    if (warning.code === 'THIS_IS_UNDEFINED' && /webcomponents-bundle\.js/.test(warning.loc?.file || '')) {
-      return
-    }
-    warn(warning)
-  }
 };

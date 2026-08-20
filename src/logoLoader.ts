@@ -3,10 +3,6 @@
   * @author   Arthur Borba <https://arthurborba.dev>
   * @license  MIT
   */
-if (!window.customElements) {
-  import('@webcomponents/webcomponentsjs/webcomponents-bundle.js');
-}
-
 const styles = `
   .logo-loader-container {
     position: relative;

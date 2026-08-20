@@ -1,4 +1,3 @@
-
 {
   "name": "logo-loader",
   "version": "0.1.4",
@@ -6,7 +5,9 @@
   "main": "dist/logoLoader.esm.js",
   "types": "logoLoader.d.ts",
   "type": "module",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "rollup -c",
     "prepublishOnly": "npm run build",
@@ -34,8 +35,5 @@
     "rollup": "^4.24.0",
     "tslib": "^2.8.0",
     "typescript": "^5.6.3"
-  },
-  "dependencies": {
-    "@webcomponents/webcomponentsjs": "^2.8.0"
   }
 }
