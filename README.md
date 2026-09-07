@@ -43,13 +43,17 @@ Alternatively, include the script tag in your HTML header:
 
 ## Usage
 
+Simply use the ` <logo-loader></logo-loader>` element in your HTML, passing either a `src` attribute or an `<img>` as slot:
+
+### SRC example:
+
 ```HTML
 <body>
   <logo-loader src="my-logo.png"></logo-loader>
 </body>
 ```
 
-or pass the image/icon as a slot:
+### SLOT example:
 
 ```HTML
 <body>
