@@ -2,6 +2,8 @@
 
 Web component to seamlessly create a loader from your logo image or icon
 
+Use your project's logo to create an infinite loader animation
+
 ## Installation
 
 #### 1) NPM
@@ -47,7 +49,7 @@ The component provide 3 animation modes:
 
 Simply use the ` <logo-loader ...></logo-loader>` element in your HTML, passing either a `src` attribute or an `<img>` slot with your logo path:
 
-### src example:
+### 1) SRC example:
 
 ```HTML
 <body>
@@ -55,7 +57,7 @@ Simply use the ` <logo-loader ...></logo-loader>` element in your HTML, passing 
 </body>
 ```
 
-### slot example:
+### 2) SLOT example:
 
 ```HTML
 <body>
@@ -74,6 +76,8 @@ Defines the animation style ("classic", "pulse" or "buildup")
 ```HTML
 <logo-loader src="..." mode="pulse"></logo-loader>
 ```
+
+If omitted, the component fallsback to "classic"
 
 ### pause
 
