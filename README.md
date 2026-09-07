@@ -29,23 +29,25 @@ Alternatively, include the script tag in your HTML header:
 
 ## Demo
 
-#### Classic mode:
+The component provide 3 animation modes:
+
+#### Classic [default]:
 
 <img src="https://lnx-tech.atl1.cdn.digitaloceanspaces.com/open-source/logo-loader/classic-mode-demo-teams.gif" alt="Logo Loader Demo - Classic Mode" width="200px" />
 
-#### Pulse mode:
+#### Pulse:
 
 <img src="https://lnx-tech.atl1.cdn.digitaloceanspaces.com/open-source/logo-loader/pulse-mode-demo-teams.gif" alt="Logo Loader Demo - Pulse Mode" width="200px" />
 
-#### Buildup mode:
+#### Buildup:
 
 <img src="https://lnx-tech.atl1.cdn.digitaloceanspaces.com/open-source/logo-loader/buildup-mode-demo-teams.gif" alt="Logo Loader Demo - Buildup Mode" width="200px" />
 
 ## Usage
 
-Simply use the ` <logo-loader></logo-loader>` element in your HTML, passing either a `src` attribute or an `<img>` as slot:
+Simply use the ` <logo-loader ...></logo-loader>` element in your HTML, passing either a `src` attribute or an `<img>` slot with your logo path:
 
-### SRC example:
+### src example:
 
 ```HTML
 <body>
@@ -53,7 +55,7 @@ Simply use the ` <logo-loader></logo-loader>` element in your HTML, passing eith
 </body>
 ```
 
-### SLOT example:
+### slot example:
 
 ```HTML
 <body>
