@@ -4,38 +4,42 @@ Web component to seamlessly create a loader from your logo image or icon
 
 ## Installation
 
-#### CDN / Script tag
-
-```HTML
-<head>
-  <script type="module" src="https://cdn.jsdelivr.net/npm/logo-loader@0.1.3/dist/logoLoader.esm.min.js"></script>
-</head>
-```
-
-or
-
-#### NPM
+#### 1) NPM
 
 ```
 npm i logo-loader
 ```
 
-then
+then import it in your app entry point (index.js, main.js...)
 
 ```JavaScript
 // main.js|ts
 import 'logo-loader'
 ```
 
+#### 2) CDN / Script tag
+
+Alternatively, include the script tag in your HTML header:
+
+```HTML
+<head>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/logo-loader@1.0.0/dist/logoLoader.esm.min.js"></script>
+</head>
+```
+
 ## Demo
 
-#### Default:
+#### Classic mode:
 
-<img src="https://lnx-tech.atl1.cdn.digitaloceanspaces.com/open-source/logo-loader/classic-mode.gif" alt="Logo Loader Demo - Default Mode" width="300px" />
+<img src="https://lnx-tech.atl1.cdn.digitaloceanspaces.com/open-source/logo-loader/classic-mode-demo-teams.gif" alt="Logo Loader Demo - Classic Mode" width="300px" />
 
 #### Pulse mode:
 
-<img src="https://lnx-tech.atl1.cdn.digitaloceanspaces.com/open-source/logo-loader/pulse-mode.gif" alt="Logo Loader Demo - Pulse Mode" width="300px" />
+<img src="https://lnx-tech.atl1.cdn.digitaloceanspaces.com/open-source/logo-loader/pulse-mode-demo-teams.gif" alt="Logo Loader Demo - Pulse Mode" width="300px" />
+
+#### Buildup mode:
+
+<img src="https://lnx-tech.atl1.cdn.digitaloceanspaces.com/open-source/logo-loader/buildup-mode-demo-teams.gif" alt="Logo Loader Demo - Buildup Mode" width="300px" />
 
 ## Usage
 
@@ -59,7 +63,7 @@ or pass the image/icon as a slot:
 
 ### mode
 
-Defines the animation style ("default" or "pulse")
+Defines the animation style ("classic", "pulse" or "buildup")
 
 ```HTML
 <logo-loader src="..." mode="pulse"></logo-loader>
