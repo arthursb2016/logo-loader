@@ -103,12 +103,12 @@ describe('LogoLoader', () => {
     })
   })
 
-  describe('getContainerTransform', () => {
+  describe('getPulseContainerTransform', () => {
     it('returns increasing scale values based on index', () => {
-      expect(element.getContainerTransform(0)).toBe('scale(0.85)')
-      expect(element.getContainerTransform(1)).toBe('scale(0.93)')
-      expect(element.getContainerTransform(2)).toBe('scale(0.98)')
-      expect(element.getContainerTransform(99)).toBe('scale(0.98)')
+      expect(element.getPulseContainerTransform(0)).toBe('scale(0.85)')
+      expect(element.getPulseContainerTransform(1)).toBe('scale(0.93)')
+      expect(element.getPulseContainerTransform(2)).toBe('scale(0.98)')
+      expect(element.getPulseContainerTransform(99)).toBe('scale(0.98)')
     })
   })
 

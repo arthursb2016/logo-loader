@@ -43,7 +43,7 @@ The component provide 3 animation modes:
 
 #### Buildup:
 
-<img src="https://lnx-tech.atl1.cdn.digitaloceanspaces.com/open-source/logo-loader/buildup-mode-demo-teams.gif" alt="Logo Loader Demo - Buildup Mode" width="200px" />
+<img src="https://lnx-tech.atl1.cdn.digitaloceanspaces.com/open-source/logo-loader/buildup-mode-demo-teams-new.gif" alt="Logo Loader Demo - Buildup Mode" width="200px" />
 
 ## Usage
 

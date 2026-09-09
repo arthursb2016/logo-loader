@@ -179,11 +179,8 @@ class LogoLoader extends HTMLElement {
               .replace('$ep', `${(i + 1) * 5}%`)
             ).join(', ')
       const xRepeatingLinearGradient = `repeating-linear-gradient(0deg, ${xRepeatingLinearGradientLines})`
-      let yAlphaValue = '0.3'
+      let yAlphaValue = '0.2'
       if (index >= (this.getStepCount() / 3)) {
-        yAlphaValue = '0.2'
-      }
-      if (index >= ((this.getStepCount() * 2) / 3)) {
         yAlphaValue = '0.1'
       }
       const yRepeatingLinearGradient = `repeating-linear-gradient(90deg, ${rgbaTemplate.replace('$alpha', yAlphaValue)} 0 1px, transparent ${(30 + ((index % 2 === 0 ? 1 : -1) * 2.5)) - (index * 1.5)}px`
@@ -219,7 +216,7 @@ class LogoLoader extends HTMLElement {
     return result;
   }
 
-  getContainerTransform(index: number) {
+  getPulseContainerTransform(index: number) {
     if (index === 0) {
       return 'scale(0.85)'
     }
@@ -227,6 +224,23 @@ class LogoLoader extends HTMLElement {
       return 'scale(0.93)'
     }
     return 'scale(0.98)'
+  }
+
+  getBuildUpContainerTransform() {
+    const isLastStep = this.currStep === this.getStepCount() - 1
+    const isLastLastStep = this.currStep === this.getStepCount() - 2
+    if (isLastStep || isLastLastStep) {
+      return 'scale(0.70)'
+    }
+    const Is3tepsAway = this.currStep === this.getStepCount() - 3
+    if (Is3tepsAway) {
+      return 'scale(0.80)'
+    }
+    const Is4tepsAway = this.currStep === this.getStepCount() - 4
+    if (Is4tepsAway) {
+      return 'scale(0.90)'
+    }
+    return 'scale(1)'
   }
 
   getAnimationSpeed(isLastStep: boolean, currStep: number) {
@@ -260,7 +274,9 @@ class LogoLoader extends HTMLElement {
       this.elements.animator.style.setProperty('height', this.getAnimatorHeightValue(this.currStep))
       this.elements.animator.style.setProperty(this.getAnimatorBackgroundKey(), this.getAnimatorBackgroundValue(this.currStep))
       if (this.getMode() === 'pulse') {
-        this.elements.logoDisplay.style.setProperty('transform', this.getContainerTransform(this.currStep))
+        this.elements.logoDisplay.style.setProperty('transform', this.getPulseContainerTransform(this.currStep))
+      } else if (this.getMode() === 'buildup') {
+        this.elements.logoDisplay.style.setProperty('transform', this.getBuildUpContainerTransform())
       }
       this.currStep = isLastStep ? 0 : this.currStep + 1
       this.timeout = setTimeout(animate, this.getAnimationSpeed(isLastStep, this.currStep))
